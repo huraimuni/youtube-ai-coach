@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube AI Coach</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <h1>YouTube AI Coach</h1>
+
+    <section class="card">
+      <h2>Enter Your API Keys</h2>
+
+      <label>YouTube API Key</label>
+      <input type="text" id="ytKey" placeholder="Enter YouTube API Key">
+
+      <label>OpenAI API Key</label>
+      <input type="text" id="gptKey" placeholder="Enter OpenAI API Key">
+
+      <label>Your Channel URL or @handle</label>
+      <input type="text" id="channelInput" placeholder="https://www.youtube.com/@channel">
+
+      <button onclick="saveKeys()">Save & Continue</button>
+    </section>
+
+    <section class="card">
+      <button onclick="runAnalysis()" class="analyze-btn">
+        Run Full Channel Analysis
+      </button>
+    </section>
+
+    <section class="card">
+      <h2>Analysis Results</h2>
+      <pre id="results"></pre>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

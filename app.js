@@ -26,17 +26,16 @@ async function runAnalysis() {
     // 1) 채널 ID 가져오기
     const channelId = await getChannelId(channelInput, ytKey);
 
-    // 2) 채널 정보 + 최근 영상 정보 가져오기
+    // 2) 채널 정보 + 최근 영상 가져오기
     const data = await fetchYouTubeData(channelId, ytKey);
 
-    // 화면에 잠시 데이터 표시
     document.getElementById("results").textContent =
-      "YouTube data loaded. Now analyzing with AI...";
+      "YouTube data loaded. Analyzing with GPT...";
 
     // 3) GPT 분석 요청
     const aiResult = await analyzeWithGPT(data, gptKey);
 
-    // 4) 최종 분석 결과 출력
+    // 4) 분석 결과 출력
     document.getElementById("results").textContent = aiResult;
 
   } catch (e) {

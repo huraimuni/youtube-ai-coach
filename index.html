@@ -38,9 +38,19 @@
 
   </div>
 
-<script src="youtube-api.js"></script>
-<script src="gpt.js"></script>
-<script src="app.js"></script>
+  <!-- 반드시 순서 유지! -->
+  <script src="youtube-api.js"></script>
+  <script src="gpt.js"></script>
+  <script src="app.js"></script>
+
+  <!-- 🟦 추가된 부분: localStorage 값 자동 입력 -->
+  <script>
+    window.onload = function () {
+      document.getElementById("ytKey").value = localStorage.getItem("ytKey") || "";
+      document.getElementById("gptKey").value = localStorage.getItem("gptKey") || "";
+      document.getElementById("channelInput").value = localStorage.getItem("channelInput") || "";
+    };
+  </script>
 
 </body>
 </html>

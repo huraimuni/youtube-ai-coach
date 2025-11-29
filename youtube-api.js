@@ -1,12 +1,20 @@
-// 채널 URL or @handle → channelId 변환
+const PROXY = "https://yt-api-proxy.vercel.app/youtube/v3";
+
 async function getChannelId(input, apiKey) {
-  // 채널 ID 직접 입력한 경우 (UC로 시작)
+  // 1) channelId 직접 입력한 경우
   if (input.startsWith("UC")) {
     return input;
   }
 
-  // search API로 채널 찾기
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(input)}&key=${apiKey}`;
+  // 2) URL에서 channelId 추출
+  const match = input.match(/channel\/(UC[\w-]+)/);
+  if (match) return match[1];
+
+  // 3) @handle 만 입력한 경우
+  const clean = input.replace("https://www.youtube.com/", "").trim();
+
+  // Proxy search API
+  const url = `${PROXY}/search?part=snippet&type=channel&q=${encodeURIComponent(clean)}&key=${apiKey}`;
 
   const response = await fetch(url);
   const data = await response.json();
@@ -18,12 +26,9 @@ async function getChannelId(input, apiKey) {
   return data.items[0].snippet.channelId;
 }
 
-
-// 채널 정보 + 최신 영상 가져오기
 async function fetchYouTubeData(channelId, apiKey) {
-  const statsUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`;
-
-  const videosUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&order=date&type=video&maxResults=10&key=${apiKey}`;
+  const statsUrl = `${PROXY}/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`;
+  const videosUrl = `${PROXY}/search?part=snippet&channelId=${channelId}&order=date&type=video&maxResults=10&key=${apiKey}`;
 
   const statsRes = await fetch(statsUrl);
   const videosRes = await fetch(videosUrl);

@@ -23,4 +23,37 @@ async function getChannelId(input, apiKey) {
 
   // 형태 2) /channel/UCxxxxxx URL 입력
   const match = input.match(/channel\/(UC[\w-]+)/);
-  i
+  if (match) return match[1];
+
+  // 형태 3) @handle 입력
+  let keyword = input.replace("https://www.youtube.com/", "").trim();
+
+  // 검색 실행 (프록시로 호출)
+  const searchPath = `/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(keyword)}&key=${apiKey}`;
+  const data = await googleAPI(searchPath);
+
+  if (!data.items || data.items.length === 0) {
+    throw new Error("채널을 찾을 수 없습니다. URL 또는 @handle을 확인하세요.");
+  }
+
+  return data.items[0].snippet.channelId;
+}
+
+
+// ---- 채널 정보 + 최신 영상 받아오기 ----
+async function fetchYouTubeData(channelId, apiKey) {
+
+  const statsPath =
+    `/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`;
+
+  const videosPath =
+    `/youtube/v3/search?part=snippet&channelId=${channelId}&order=date&type=video&maxResults=10&key=${apiKey}`;
+
+  const channelData = await googleAPI(statsPath);
+  const videosData = await googleAPI(videosPath);
+
+  return {
+    channel: channelData.items ? channelData.items[0] : null,
+    videos: videosData.items || []
+  };
+}
